@@ -110,10 +110,10 @@ void __print_waiting_and_turnaround_time(Process *processes, int size) {
     int turnaround_time_sum = 0;
 
     int i;
-    printf("p_id | wait | turnaround\n");
+//    printf("p_id | wait | turnaround\n");
     for (i = 0; i < size; i++) {
         Process p = processes[i];
-        printf("%4c | %4d | %10d\n", p->p_id, p->waiting_time, p->turnaround_time);
+//        printf("%4c | %4d | %10d\n", p->p_id, p->waiting_time, p->turnaround_time);
         waiting_time_sum += p->waiting_time;
         turnaround_time_sum += p->turnaround_time;
     }
