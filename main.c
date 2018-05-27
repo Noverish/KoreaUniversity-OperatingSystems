@@ -35,8 +35,8 @@ int main() {
 
     int scheduler_index = 0;
     for (scheduler_index = 0; scheduler_index < scheduler_num; scheduler_index++) {
-        Scheduler now_scheduler = schedulers[scheduler_index];
         reset_process_information(processes, PROCESS_NUM);
+        Scheduler now_scheduler = schedulers[scheduler_index];
         Process previous_process = NULL;
         Schedule schedules = NULL;
         int terminated_process_num = 0;
@@ -92,7 +92,8 @@ int main() {
             previous_process = p;
         }
 
-        printf("\n%s\n", scheduler_names[scheduler_index]);
+        printf("========================================================================\n");
+        printf("%s\n\n", scheduler_names[scheduler_index]);
         print_schedule(schedules);
         __print_waiting_and_turnaround_time(processes, PROCESS_NUM);
         printf("\n");

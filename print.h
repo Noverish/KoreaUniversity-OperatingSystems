@@ -19,4 +19,6 @@ void __print_two_queues(ProcessQueue ready_queue, ProcessQueue waiting_queue);
 
 void __print_waiting_and_turnaround_time(Process *processes, int size);
 
+void clear_string(char* string, int size);
+
 #endif //CPU_SCHEDULING_SIMULATOR_PRINT_H

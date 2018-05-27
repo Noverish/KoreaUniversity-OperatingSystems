@@ -14,48 +14,71 @@ void print_processes(Process *processes, int size) {
         printf("%4c | %3d | %3d | %6d | %8d\n", p->p_id, p->cpu_burst_time, p->io_burst_time, p->arrival_time,
                p->priority);
     }
+    printf("\n");
 }
 
 void print_schedule(Schedule schedule) {
+    char strings[100][100] = {0};
     Schedule now = schedule;
+    Schedule previous = NULL;
+    int now_time = 0, now_col = 0;
+    int r, c, i;
+
     while (now != NULL) {
 
-        printf("-");
+        if (previous == NULL || now->process != previous->process) {
+            if (now_time >= 10)
+                sprintf(&(strings[0][now_col - 1]), "%2d", now_time);
+            else
+                sprintf(&(strings[0][now_col]), "%d", now_time);
+            sprintf(&(strings[1][now_col]), "+");
+            sprintf(&(strings[2][now_col]), "|");
+            sprintf(&(strings[3][now_col]), "+");
 
+            if (previous != NULL && previous->io_occurred) {
+                for (i = 0; i < now_col; i++) {
+                    if (strings[4][i] == 0)
+                        strings[4][i] = ' ';
+                    if (strings[5][i] == 0)
+                        strings[5][i] = ' ';
+                }
+
+                sprintf(&(strings[4][now_col]), "^");
+                sprintf(&(strings[5][now_col-1]), "I/O");
+            }
+
+
+            now_col++;
+        }
+
+        sprintf(&(strings[0][now_col]), " ");
+        sprintf(&(strings[1][now_col]), "-");
+        sprintf(&(strings[2][now_col]), "%c", (now->process == NULL) ? ' ' : now->process->p_id);
+        sprintf(&(strings[3][now_col]), "-");
+        now_col++;
+
+        now_time++;
+        previous = now;
         now = now->next_schedule;
     }
-    printf("\n");
 
-    now = schedule;
-    while (now != NULL) {
+    if (now_time >= 10)
+        sprintf(&(strings[0][now_col - 1]), "%2d", now_time);
+    else
+        sprintf(&(strings[0][now_col]), "%d", now_time);
+    sprintf(&(strings[1][now_col]), "+");
+    sprintf(&(strings[2][now_col]), "|");
+    sprintf(&(strings[3][now_col]), "+");
 
-        if (now->process == NULL)
-            printf(" ");
-        else
-            printf("%c", now->process->p_id);
-
-        now = now->next_schedule;
-    }
-    printf("\n");
-
-    now = schedule;
-    while (now != NULL) {
-
-        printf("-");
-
-        now = now->next_schedule;
-    }
-    printf("\n");
-
-    now = schedule;
-    while (now != NULL) {
-
-        if (now->io_occurred)
-            printf("|");
-        else
-            printf(" ");
-
-        now = now->next_schedule;
+    for (r = 0; r < 100; r++) {
+        for (c = 0; c < 100; c++) {
+            char ch = strings[r][c];
+            if (ch != 0) {
+                printf("%c", ch);
+            }
+        }
+        if (strings[r][0] != 0)
+            printf("\n");
     }
     printf("\n");
 }
@@ -97,4 +120,10 @@ void __print_waiting_and_turnaround_time(Process *processes, int size) {
 
     printf("average waiting time : %f\n", (double) waiting_time_sum / size);
     printf("average turnaround time : %f\n", (double) turnaround_time_sum / size);
+}
+
+void clear_string(char *string, int size) {
+    int i;
+    for (i = 0; i < size; i++)
+        string[i] = 0;
 }
