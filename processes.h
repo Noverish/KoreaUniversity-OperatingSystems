@@ -19,6 +19,9 @@ struct _Process {
     uint32_t remaining_io_burst_time;
     BOOL is_in_io;
     uint32_t continuous_cpu_burst_time;
+
+    uint32_t waiting_time;
+    uint32_t turnaround_time;
 };
 typedef struct _Process *Process;
 

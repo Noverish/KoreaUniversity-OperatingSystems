@@ -36,5 +36,8 @@ Process create_process(uint8_t p_id, uint32_t cpu_burst_time, uint32_t io_burst_
     process->remaining_io_burst_time = 0;
     process->is_in_io = FALSE;
     process->continuous_cpu_burst_time = 0;
+
+    process->waiting_time = 0;
+    process->turnaround_time = 0;
     return process;
 }

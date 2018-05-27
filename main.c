@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "main.h"
 #include "options.h"
-#include "processes.h"
-#include "queues.h"
 #include "schedulers.h"
 #include "print.h"
-#include "schedule.h"
 
+int scheduler_num = 6;
 Scheduler schedulers[] = {first_come_first_served,
                           shortest_job_first_preemptive,
                           shortest_job_first_non_preemptive,
@@ -20,27 +19,10 @@ char *scheduler_names[] = {"first_come_first_served",
                            "priority_preemptive",
                            "priority_non_preemptive",
                            "round_robin"};
-int scheduler_num = 6;
-int scheduler_index = 0;
 
 Process *processes;
 ProcessQueue ready_queue;
 ProcessQueue waiting_queue;
-int terminated_process_num;
-int i;
-int now_time;
-
-Schedule schedules;
-
-void put_arrived_process_to_ready_queue(ProcessQueue ready_queue, Process *processes, uint32_t size, int now_time);
-
-void put_io_done_process_to_ready_queue(ProcessQueue ready_queue, ProcessQueue waiting_queue);
-
-void put_process_to_waiting_queue_from_ready_queue(ProcessQueue ready_queue, ProcessQueue waiting_queue, Process p);
-
-void progress_waiting_queue(ProcessQueue waiting_queue);
-
-void reset_process_information(Process *processes, int size);
 
 int main() {
     srand((unsigned int) time(NULL));
@@ -51,11 +33,14 @@ int main() {
 
     print_processes(processes, PROCESS_NUM);
 
+    int scheduler_index = 0;
     for (scheduler_index = 0; scheduler_index < scheduler_num; scheduler_index++) {
         Scheduler now_scheduler = schedulers[scheduler_index];
-        terminated_process_num = 0;
         reset_process_information(processes, PROCESS_NUM);
         Process previous_process = NULL;
+        Schedule schedules = NULL;
+        int terminated_process_num = 0;
+        int now_time;
 
         for (now_time = 0; terminated_process_num != PROCESS_NUM; now_time++) {
 
@@ -72,15 +57,16 @@ int main() {
 
             // Run process (cpu and io)
             if (p != NULL) {
-                p->remaining_cpu_burst_time -= 1; // decrease remaining_cpu_burst_time
-                p->continuous_cpu_burst_time++; // increase continuous_cpu_burst_time
+                p->remaining_cpu_burst_time -= 1; // Decrease remaining_cpu_burst_time
+                p->continuous_cpu_burst_time++; // Increase continuous_cpu_burst_time
             }
-            progress_waiting_queue(waiting_queue); // decrease remaining_io_burst_time
-            previous_process = p;
+            decrease_io_burst_time_in_waiting_queue(waiting_queue); // Decrease remaining_io_burst_time
+            increase_waiting_time(ready_queue, p);  // Increase waiting time of processes in ready queue
 
             // Terminate process if cpu burst done
             if (p != NULL && p->remaining_cpu_burst_time == 0) {
                 remove_from_queue(ready_queue, p);
+                p->turnaround_time = (now_time + 1) - p->arrival_time;
                 terminated_process_num++;
             }
 
@@ -102,14 +88,16 @@ int main() {
                 schedules = create_schedule(p, io_occurred);
             else
                 add_schedule(schedules, p, io_occurred);
+
+            previous_process = p;
         }
 
-        printf("%s\n", scheduler_names[scheduler_index]);
+        printf("\n%s\n", scheduler_names[scheduler_index]);
         print_schedule(schedules);
+        __print_waiting_and_turnaround_time(processes, PROCESS_NUM);
         printf("\n");
 
         free_schedule(schedules);
-        schedules = NULL;
     }
 
     return 0;
@@ -125,7 +113,7 @@ void put_arrived_process_to_ready_queue(ProcessQueue ready_queue, Process *proce
     }
 }
 
-void progress_waiting_queue(ProcessQueue waiting_queue) {
+void decrease_io_burst_time_in_waiting_queue(ProcessQueue waiting_queue) {
     Process *array = create_process_array_from_queue(waiting_queue);
     int size = size_of_queue(waiting_queue);
     int i;
@@ -168,5 +156,16 @@ void reset_process_information(Process *processes, int size) {
         processes[i]->remaining_io_burst_time = 0;
         processes[i]->is_in_io = FALSE;
         processes[i]->continuous_cpu_burst_time = 0;
+        processes[i]->waiting_time = 0;
+        processes[i]->turnaround_time = 0;
+    }
+}
+
+void increase_waiting_time(ProcessQueue ready_queue, Process now_running_process) {
+    ProcessQueueNode now = *ready_queue;
+    while (now != NULL) {
+        if (now->process != now_running_process)
+            now->process->waiting_time++;
+        now = now->next;
     }
 }
