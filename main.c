@@ -10,11 +10,15 @@
 
 Scheduler schedulers[] = {first_come_first_served,
                           shortest_job_first_preemptive,
-                          shortest_job_first_non_preemptive};
+                          shortest_job_first_non_preemptive,
+                          priority_preemptive,
+                          priority_non_preemptive};
 char *scheduler_names[] = {"first_come_first_served",
                            "shortest_job_first_preemptive",
-                           "shortest_job_first_non_preemptive"};
-int scheduler_num = 3;
+                           "shortest_job_first_non_preemptive",
+                           "priority_preemptive",
+                           "priority_non_preemptive"};
+int scheduler_num = 5;
 int scheduler_index = 0;
 
 Process *processes;

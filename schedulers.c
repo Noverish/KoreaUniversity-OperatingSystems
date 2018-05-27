@@ -6,7 +6,6 @@
 #include "schedulers.h"
 
 Process first_come_first_served(ProcessQueue ready_queue, Process before_processed) {
-
     if (is_queue_empty(ready_queue))
         return NULL;
 
@@ -17,19 +16,17 @@ Process shortest_job_first_preemptive(ProcessQueue ready_queue, Process before_p
     if (is_queue_empty(ready_queue))
         return NULL;
 
-    Process *array = create_process_array_from_queue(ready_queue);
-    Process min = array[0];
-    int array_size = size_of_queue(ready_queue);
-    int i;
+    ProcessQueueNode now = *ready_queue;
+    Process min = now->process;
 
-    for (i = 0; i < array_size; i++) {
-        Process p = array[i];
-        if (min->remaining_cpu_burst_time > p->remaining_cpu_burst_time) {
-            min = p;
+    while(now != NULL) {
+        if (min->remaining_cpu_burst_time > now->process->remaining_cpu_burst_time) {
+            min = now->process;
         }
+
+        now = now->next;
     }
 
-    free(array);
     return min;
 }
 
@@ -37,22 +34,56 @@ Process shortest_job_first_non_preemptive(ProcessQueue ready_queue, Process befo
     if (is_queue_empty(ready_queue))
         return NULL;
 
-    Process *array = create_process_array_from_queue(ready_queue);
-    Process min = array[0];
-    int array_size = size_of_queue(ready_queue);
-    int i;
+    ProcessQueueNode now = *ready_queue;
+    Process min = now->process;
 
-    for (i = 0; i < array_size; i++) {
-        Process p = array[i];
-        if (min->remaining_cpu_burst_time > p->remaining_cpu_burst_time) {
-            min = p;
+    while(now != NULL) {
+        if (min->remaining_cpu_burst_time > now->process->remaining_cpu_burst_time) {
+            min = now->process;
         }
-    }
 
-    free(array);
+        now = now->next;
+    }
 
     if (before_processed != NULL && is_process_in_queue(ready_queue, before_processed))
         return before_processed;
     else
         return min;
+}
+
+Process priority_preemptive(ProcessQueue ready_queue, Process before_processed) {
+    if (is_queue_empty(ready_queue))
+        return NULL;
+
+    ProcessQueueNode now = *ready_queue;
+    Process highest = now->process;
+
+    while(now != NULL) {
+        if(highest->priority < now->process->priority)
+            highest = now->process;
+
+        now = now->next;
+    }
+
+    return highest;
+}
+
+Process priority_non_preemptive(ProcessQueue ready_queue, Process before_processed) {
+    if (is_queue_empty(ready_queue))
+        return NULL;
+
+    ProcessQueueNode now = *ready_queue;
+    Process highest = now->process;
+
+    while(now != NULL) {
+        if(highest->priority < now->process->priority)
+            highest = now->process;
+
+        now = now->next;
+    }
+
+    if (before_processed != NULL && is_process_in_queue(ready_queue, before_processed))
+        return before_processed;
+    else
+        return highest;
 }

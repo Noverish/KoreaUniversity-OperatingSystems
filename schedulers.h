@@ -17,6 +17,10 @@ Process shortest_job_first_preemptive(ProcessQueue, Process);
 
 Process shortest_job_first_non_preemptive(ProcessQueue, Process);
 
+Process priority_preemptive(ProcessQueue, Process);
+
+Process priority_non_preemptive(ProcessQueue, Process);
+
 extern int terminated_process_num;
 
 #endif //CPU_SCHEDULING_SIMULATOR_SCHEDULERS_H
