@@ -27,4 +27,6 @@ void remove_from_queue(ProcessQueue queue, Process process);
 
 Process *create_process_array_from_queue(ProcessQueue queue);
 
+BOOL is_process_in_queue(ProcessQueue queue, Process process);
+
 #endif //CPU_SCHEDULING_SIMULATOR_QUEUES_H

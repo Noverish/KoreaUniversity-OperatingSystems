@@ -30,3 +30,20 @@ int schedule_size(Schedule schedule) {
     }
     return size;
 }
+
+void free_schedule(Schedule schedule) {
+    Schedule now = schedule;
+    while (now != NULL) {
+        Schedule tmp = now->next_schedule;
+        free(now);
+        now = tmp;
+    }
+}
+
+Schedule get_last_schedule(Schedule schedule) {
+    Schedule now = schedule;
+    while (now->next_schedule != NULL) {
+        now = now->next_schedule;
+    }
+    return now;
+}

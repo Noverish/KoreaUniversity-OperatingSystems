@@ -8,8 +8,13 @@
 #include "print.h"
 #include "schedule.h"
 
-Scheduler schedulers[] = {first_come_first_served};
-int scheduler_num = 1;
+Scheduler schedulers[] = {first_come_first_served,
+                          shortest_job_first_preemptive,
+                          shortest_job_first_non_preemptive};
+char *scheduler_names[] = {"first_come_first_served",
+                           "shortest_job_first_preemptive",
+                           "shortest_job_first_non_preemptive"};
+int scheduler_num = 3;
 int scheduler_index = 0;
 
 Process *processes;
@@ -29,6 +34,8 @@ void put_process_to_waiting_queue_from_ready_queue(ProcessQueue ready_queue, Pro
 
 void progress_waiting_queue(ProcessQueue waiting_queue);
 
+void reset_remaining_cpu_burst_time(Process *processes, int size);
+
 int main() {
     srand((unsigned int) time(NULL));
 
@@ -40,6 +47,9 @@ int main() {
 
     for (scheduler_index = 0; scheduler_index < scheduler_num; scheduler_index++) {
         Scheduler now_scheduler = schedulers[scheduler_index];
+        terminated_process_num = 0;
+        reset_remaining_cpu_burst_time(processes, PROCESS_NUM);
+        Process before_processed = NULL;
 
         for (now_time = 0; terminated_process_num != PROCESS_NUM; now_time++) {
 
@@ -47,12 +57,13 @@ int main() {
             put_arrived_process_to_ready_queue(ready_queue, processes, PROCESS_NUM, now_time);
 
             // Choose process
-            Process p = now_scheduler(ready_queue, waiting_queue, processes, PROCESS_NUM, now_time);
+            Process p = now_scheduler(ready_queue, before_processed);
 
             // Run process (cpu and io)
             if (p != NULL)
                 p->remaining_cpu_burst_time -= 1; // run on cpu
             progress_waiting_queue(waiting_queue); // run on each io devices
+            before_processed = p;
 
             // Terminate process if cpu burst done
             if (p != NULL)
@@ -81,7 +92,12 @@ int main() {
                 add_schedule(schedules, p, io_occurred);
         }
 
+        printf("%s\n", scheduler_names[scheduler_index]);
         print_schedule(schedules);
+        printf("\n");
+
+        free_schedule(schedules);
+        schedules = NULL;
     }
 
     return 0;
@@ -130,4 +146,11 @@ void put_process_to_waiting_queue_from_ready_queue(ProcessQueue ready_queue, Pro
     remove_from_queue(ready_queue, p);
     add_to_queue(waiting_queue, p);
     p->remaining_io_burst_time = p->io_burst_time;
+}
+
+void reset_remaining_cpu_burst_time(Process *processes, int size) {
+    int i;
+    for (i = 0; i < size; i++) {
+        processes[i]->remaining_cpu_burst_time = processes[i]->cpu_burst_time;
+    }
 }

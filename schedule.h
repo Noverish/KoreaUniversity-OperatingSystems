@@ -21,4 +21,8 @@ void add_schedule(Schedule schedule, Process p, BOOL io_occurred);
 
 int schedule_size(Schedule schedule);
 
+void free_schedule(Schedule schedule);
+
+Schedule get_last_schedule(Schedule schedule);
+
 #endif //CPU_SCHEDULING_SIMULATOR_SCHEDULE_H

@@ -9,10 +9,13 @@
 #include "queues.h"
 
 
-typedef Process (*Scheduler)(ProcessQueue, ProcessQueue, Process *, uint32_t, int);
+typedef Process (*Scheduler)(ProcessQueue, Process);
 
-Process first_come_first_served(ProcessQueue ready_queue, ProcessQueue waiting_queue, Process *processes, uint32_t size,
-                                int now_time);
+Process first_come_first_served(ProcessQueue, Process);
+
+Process shortest_job_first_preemptive(ProcessQueue, Process);
+
+Process shortest_job_first_non_preemptive(ProcessQueue, Process);
 
 extern int terminated_process_num;
 

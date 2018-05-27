@@ -21,13 +21,11 @@ int size_of_queue(ProcessQueue queue) {
         return 0;
 
     ProcessQueueNode now = *queue;
-    ProcessQueueNode next = now->next;
-    int size = 1;
+    int size = 0;
 
-    while (next != NULL) {
+    while (now != NULL) {
         size++;
-        now = next;
-        next = now->next;
+        now = now->next;
     }
 
     return size;
@@ -64,10 +62,9 @@ void remove_from_queue(ProcessQueue queue, Process process) {
             return;
 
         ProcessQueueNode now = *queue;
-        ProcessQueueNode next = now->next;
 
         if (now->process == process) {
-            *queue = next;
+            *queue = now->next;
             free(now);
         } else {
             break;
@@ -95,16 +92,23 @@ Process *create_process_array_from_queue(ProcessQueue queue) {
 
     Process *array = (Process *) malloc(size * sizeof(struct _Process));
     ProcessQueueNode now = *queue;
-    ProcessQueueNode next = now->next;
-    int i = 1;
-
-    array[0] = now->process;
-    while (next != NULL) {
-        array[i] = next->process;
-        now = next;
-        next = now->next;
-        i++;
+    int i;
+    for (i = 0; i < size; i++) {
+        array[i] = now->process;
+        now = now->next;
     }
 
     return array;
+}
+
+BOOL is_process_in_queue(ProcessQueue queue, Process process) {
+    ProcessQueueNode now = *queue;
+
+    while (now != NULL) {
+        if (now->process == process)
+            return TRUE;
+
+        now = now->next;
+    }
+    return FALSE;
 }
