@@ -6,35 +6,105 @@
 #include <assert.h>
 #include "queues.h"
 
-ProcessQueue create_process_queue(uint32_t size) {
-    ProcessQueue queue = (ProcessQueue) malloc(sizeof(struct _ProcessQueue));
-    queue->processes = (Process*) malloc(size * sizeof(struct _Process));
-    queue->start = 0;
-    queue->end = 0;
-    queue->size = size;
+ProcessQueue create_process_queue() {
+    ProcessQueue queue = (ProcessQueue) malloc(sizeof(ProcessQueueNode));
+    *queue = NULL;
     return queue;
 }
 
 BOOL is_queue_empty(ProcessQueue queue) {
-    return (queue->start == queue->end) ? TRUE : FALSE;
+    return (queue == NULL || *queue == NULL) ? TRUE : FALSE;
 }
 
-BOOL is_queue_full(ProcessQueue queue) {
-    int start_plus_1 = (queue->start + 1) % queue->size;
-    return (start_plus_1 == queue->end) ? TRUE : FALSE;
+int size_of_queue(ProcessQueue queue) {
+    if (is_queue_empty(queue))
+        return 0;
+
+    ProcessQueueNode now = *queue;
+    ProcessQueueNode next = now->next;
+    int size = 1;
+
+    while (next != NULL) {
+        size++;
+        now = next;
+        next = now->next;
+    }
+
+    return size;
 }
 
-Process pop(ProcessQueue queue) {
-    assert(!is_queue_empty(queue));
+ProcessQueueNode get_last_node_of_queue(ProcessQueue queue) {
+    if (is_queue_empty(queue))
+        return NULL;
 
-    Process p = queue->processes[queue->start];
-    queue->start = (queue->start + 1) % queue->size;
-    return p;
+    ProcessQueueNode now = *queue;
+    while (now->next != NULL) {
+        now = now->next;
+    }
+    return now;
 }
 
-void push(ProcessQueue queue, Process p) {
-    assert(!is_queue_full(queue));
+void add_to_queue(ProcessQueue queue, Process process) {
+    ProcessQueueNode new_node = (ProcessQueueNode) malloc(sizeof(struct _ProcessQueueNode));
+    new_node->process = process;
+    new_node->next = NULL;
 
-    queue->end = (queue->end + 1) % queue->size;
-    queue->processes[queue->end] = p;
+    if (is_queue_empty(queue)) {
+        *queue = new_node;
+    } else {
+        get_last_node_of_queue(queue)->next = new_node;
+    }
+}
+
+void remove_from_queue(ProcessQueue queue, Process process) {
+
+    // Replace queue first node
+    while (TRUE) {
+        if (is_queue_empty(queue))
+            return;
+
+        ProcessQueueNode now = *queue;
+        ProcessQueueNode next = now->next;
+
+        if (now->process == process) {
+            *queue = next;
+            free(now);
+        } else {
+            break;
+        }
+    }
+
+    ProcessQueueNode now = *queue;
+    ProcessQueueNode next = now->next;
+    while (next != NULL) {
+        if (next->process == process) {
+            now->next = next->next;
+            free(next);
+            next = now->next;
+        } else {
+            now = next;
+            next = now->next;
+        }
+    }
+}
+
+Process *create_process_array_from_queue(ProcessQueue queue) {
+    int size = size_of_queue(queue);
+    if (size == 0)
+        return NULL;
+
+    Process *array = (Process *) malloc(size * sizeof(struct _Process));
+    ProcessQueueNode now = *queue;
+    ProcessQueueNode next = now->next;
+    int i = 1;
+
+    array[0] = now->process;
+    while (next != NULL) {
+        array[i] = next->process;
+        now = next;
+        next = now->next;
+        i++;
+    }
+
+    return array;
 }

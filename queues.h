@@ -8,18 +8,23 @@
 #include "processes.h"
 #include "utils.h"
 
-struct _ProcessQueue {
-    Process* processes;
-    uint32_t start;
-    uint32_t end;
-    uint32_t size;
+struct _ProcessQueueNode {
+    Process process;
+    struct _ProcessQueueNode *next;
 };
-typedef struct _ProcessQueue* ProcessQueue;
+typedef struct _ProcessQueueNode *ProcessQueueNode;
+typedef struct _ProcessQueueNode **ProcessQueue;
 
-ProcessQueue create_process_queue(uint32_t size);
+ProcessQueue create_process_queue();
+
 BOOL is_queue_empty(ProcessQueue queue);
-BOOL is_queue_full(ProcessQueue queue);
-Process pop(ProcessQueue queue);
-void push(ProcessQueue queue, Process p);
+
+int size_of_queue(ProcessQueue queue);
+
+void add_to_queue(ProcessQueue queue, Process process);
+
+void remove_from_queue(ProcessQueue queue, Process process);
+
+Process *create_process_array_from_queue(ProcessQueue queue);
 
 #endif //CPU_SCHEDULING_SIMULATOR_QUEUES_H

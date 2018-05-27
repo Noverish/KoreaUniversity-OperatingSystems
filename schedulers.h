@@ -5,9 +5,15 @@
 #ifndef CPU_SCHEDULING_SIMULATOR_SCHEDULERS_H
 #define CPU_SCHEDULING_SIMULATOR_SCHEDULERS_H
 
-struct _Schedule {
+#include "processes.h"
+#include "queues.h"
 
-};
-typedef struct _Schedule* Schedule;
+
+typedef Process (*Scheduler)(ProcessQueue, ProcessQueue, Process *, uint32_t, int);
+
+Process first_come_first_served(ProcessQueue ready_queue, ProcessQueue waiting_queue, Process *processes, uint32_t size,
+                                int now_time);
+
+extern int terminated_process_num;
 
 #endif //CPU_SCHEDULING_SIMULATOR_SCHEDULERS_H

@@ -8,15 +8,20 @@
 #include <stdint.h>
 
 struct _Process {
-    uint32_t p_id;
+    uint8_t p_id;
     uint32_t cpu_burst_time;
     uint32_t io_burst_time;
     uint32_t arrival_time;
     uint32_t priority;
+
+    uint32_t remaining_cpu_burst_time;
+    uint32_t remaining_io_burst_time;
 };
 typedef struct _Process *Process;
 
-Process* create_processes(uint32_t process_num);
-Process create_process(uint32_t p_id, uint32_t cpu_burst_time, uint32_t io_burst_time, uint32_t arrival_time, uint32_t priority);
+Process *create_processes(uint32_t process_num);
+
+Process create_process(uint8_t p_id, uint32_t cpu_burst_time, uint32_t io_burst_time, uint32_t arrival_time,
+                       uint32_t priority);
 
 #endif //CPU_SCHEDULING_SIMULATOR_PROCESSES_H

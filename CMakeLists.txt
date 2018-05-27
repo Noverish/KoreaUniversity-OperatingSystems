@@ -3,5 +3,5 @@ project(CPU_Scheduling_Simulator)
 
 set(CMAKE_C_STANDARD 99)
 
-set(SOURCE_FILES main.c utils.c utils.h processes.c processes.h options.h queues.c queues.h schedulers.c schedulers.h)
+set(SOURCE_FILES main.c utils.c utils.h processes.c processes.h options.h queues.c queues.h schedulers.c schedulers.h print.c print.h schedule.c schedule.h)
 add_executable(CPU_Scheduling_Simulator ${SOURCE_FILES})
