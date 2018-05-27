@@ -21,6 +21,8 @@ Process priority_preemptive(ProcessQueue, Process);
 
 Process priority_non_preemptive(ProcessQueue, Process);
 
+Process round_robin(ProcessQueue, Process);
+
 extern int terminated_process_num;
 
 #endif //CPU_SCHEDULING_SIMULATOR_SCHEDULERS_H

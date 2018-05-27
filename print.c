@@ -67,7 +67,8 @@ void print_process_queue(ProcessQueue queue) {
 
     for (i = 0; i < size; i++) {
         Process p = array[i];
-        printf("[%c:%2d,%2d]", p->p_id, p->remaining_cpu_burst_time, p->remaining_io_burst_time);
+        printf("[%c:%2d,%2d,%2d]", p->p_id, p->remaining_cpu_burst_time, p->remaining_io_burst_time,
+               p->continuous_cpu_burst_time);
     }
     printf("\n");
 

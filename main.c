@@ -12,13 +12,15 @@ Scheduler schedulers[] = {first_come_first_served,
                           shortest_job_first_preemptive,
                           shortest_job_first_non_preemptive,
                           priority_preemptive,
-                          priority_non_preemptive};
+                          priority_non_preemptive,
+                          round_robin};
 char *scheduler_names[] = {"first_come_first_served",
                            "shortest_job_first_preemptive",
                            "shortest_job_first_non_preemptive",
                            "priority_preemptive",
-                           "priority_non_preemptive"};
-int scheduler_num = 5;
+                           "priority_non_preemptive",
+                           "round_robin"};
+int scheduler_num = 6;
 int scheduler_index = 0;
 
 Process *processes;
@@ -38,7 +40,7 @@ void put_process_to_waiting_queue_from_ready_queue(ProcessQueue ready_queue, Pro
 
 void progress_waiting_queue(ProcessQueue waiting_queue);
 
-void reset_remaining_cpu_burst_time(Process *processes, int size);
+void reset_process_information(Process *processes, int size);
 
 int main() {
     srand((unsigned int) time(NULL));
@@ -52,8 +54,8 @@ int main() {
     for (scheduler_index = 0; scheduler_index < scheduler_num; scheduler_index++) {
         Scheduler now_scheduler = schedulers[scheduler_index];
         terminated_process_num = 0;
-        reset_remaining_cpu_burst_time(processes, PROCESS_NUM);
-        Process before_processed = NULL;
+        reset_process_information(processes, PROCESS_NUM);
+        Process previous_process = NULL;
 
         for (now_time = 0; terminated_process_num != PROCESS_NUM; now_time++) {
 
@@ -61,20 +63,26 @@ int main() {
             put_arrived_process_to_ready_queue(ready_queue, processes, PROCESS_NUM, now_time);
 
             // Choose process
-            Process p = now_scheduler(ready_queue, before_processed);
+            Process p = now_scheduler(ready_queue, previous_process);
+
+            // If chosen process is different from previous process,
+            // reset continuous_cpu_burst_time of previous process
+            if (p != previous_process && previous_process != NULL)
+                previous_process->continuous_cpu_burst_time = 0;
 
             // Run process (cpu and io)
-            if (p != NULL)
-                p->remaining_cpu_burst_time -= 1; // run on cpu
-            progress_waiting_queue(waiting_queue); // run on each io devices
-            before_processed = p;
+            if (p != NULL) {
+                p->remaining_cpu_burst_time -= 1; // decrease remaining_cpu_burst_time
+                p->continuous_cpu_burst_time++; // increase continuous_cpu_burst_time
+            }
+            progress_waiting_queue(waiting_queue); // decrease remaining_io_burst_time
+            previous_process = p;
 
             // Terminate process if cpu burst done
-            if (p != NULL)
-                if (p->remaining_cpu_burst_time == 0) {
-                    remove_from_queue(ready_queue, p);
-                    terminated_process_num++;
-                }
+            if (p != NULL && p->remaining_cpu_burst_time == 0) {
+                remove_from_queue(ready_queue, p);
+                terminated_process_num++;
+            }
 
             // Put process to ready queue when I/O done
             put_io_done_process_to_ready_queue(ready_queue, waiting_queue);
@@ -136,10 +144,10 @@ void put_io_done_process_to_ready_queue(ProcessQueue ready_queue, ProcessQueue w
 
     for (i = 0; i < size; i++) {
         Process p = array[i];
-        if (p->remaining_io_burst_time == 0) {
+        if (p->remaining_io_burst_time == 0 && p->is_in_io) {
             remove_from_queue(waiting_queue, p);
             add_to_queue(ready_queue, p);
-            p->remaining_io_burst_time = (uint32_t) -1;
+            p->is_in_io = FALSE;
         }
     }
 
@@ -150,11 +158,15 @@ void put_process_to_waiting_queue_from_ready_queue(ProcessQueue ready_queue, Pro
     remove_from_queue(ready_queue, p);
     add_to_queue(waiting_queue, p);
     p->remaining_io_burst_time = p->io_burst_time;
+    p->is_in_io = TRUE;
 }
 
-void reset_remaining_cpu_burst_time(Process *processes, int size) {
+void reset_process_information(Process *processes, int size) {
     int i;
     for (i = 0; i < size; i++) {
         processes[i]->remaining_cpu_burst_time = processes[i]->cpu_burst_time;
+        processes[i]->remaining_io_burst_time = 0;
+        processes[i]->is_in_io = FALSE;
+        processes[i]->continuous_cpu_burst_time = 0;
     }
 }

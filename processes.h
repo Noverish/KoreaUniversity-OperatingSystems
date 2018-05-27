@@ -6,6 +6,7 @@
 #define CPU_SCHEDULING_SIMULATOR_PROCESSES_H
 
 #include <stdint.h>
+#include "utils.h"
 
 struct _Process {
     uint8_t p_id;
@@ -16,6 +17,8 @@ struct _Process {
 
     uint32_t remaining_cpu_burst_time;
     uint32_t remaining_io_burst_time;
+    BOOL is_in_io;
+    uint32_t continuous_cpu_burst_time;
 };
 typedef struct _Process *Process;
 

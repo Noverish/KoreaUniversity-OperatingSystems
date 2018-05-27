@@ -4,7 +4,6 @@
 
 #include <stdlib.h>
 #include "processes.h"
-#include "utils.h"
 #include "options.h"
 
 Process *create_processes(uint32_t process_num) {
@@ -34,6 +33,8 @@ Process create_process(uint8_t p_id, uint32_t cpu_burst_time, uint32_t io_burst_
     process->priority = priority;
 
     process->remaining_cpu_burst_time = process->cpu_burst_time;
-    process->remaining_io_burst_time = (uint32_t) -1;
+    process->remaining_io_burst_time = 0;
+    process->is_in_io = FALSE;
+    process->continuous_cpu_burst_time = 0;
     return process;
 }
