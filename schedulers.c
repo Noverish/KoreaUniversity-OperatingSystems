@@ -21,7 +21,7 @@ Process shortest_job_first_preemptive(ProcessQueue ready_queue, Process before_p
     Process min = now->process;
 
     while (now != NULL) {
-        if (min->remaining_cpu_burst_time > now->process->remaining_cpu_burst_time) {
+        if (min->cpu_burst_time > now->process->cpu_burst_time) {
             min = now->process;
         }
 
@@ -39,7 +39,7 @@ Process shortest_job_first_non_preemptive(ProcessQueue ready_queue, Process befo
     Process min = now->process;
 
     while (now != NULL) {
-        if (min->remaining_cpu_burst_time > now->process->remaining_cpu_burst_time) {
+        if (min->cpu_burst_time > now->process->cpu_burst_time) {
             min = now->process;
         }
 
@@ -107,4 +107,89 @@ Process round_robin(ProcessQueue ready_queue, Process before_processed) {
     }
 
     return NULL;
+}
+
+Process shortest_remaining_time_first_preemptive(ProcessQueue ready_queue, Process before_processed) {
+    if (is_queue_empty(ready_queue))
+        return NULL;
+
+    ProcessQueueNode now = *ready_queue;
+    Process min = now->process;
+
+    while (now != NULL) {
+        if (min->cpu_burst_time > now->process->cpu_burst_time) {
+            min = now->process;
+        }
+
+        now = now->next;
+    }
+
+    return min;
+}
+
+Process shortest_remaining_time_first_non_preemptive(ProcessQueue ready_queue, Process before_processed) {
+    if (is_queue_empty(ready_queue))
+        return NULL;
+
+    ProcessQueueNode now = *ready_queue;
+    Process min = now->process;
+
+    while (now != NULL) {
+        if (min->cpu_burst_time > now->process->cpu_burst_time) {
+            min = now->process;
+        }
+
+        now = now->next;
+    }
+
+    if (before_processed != NULL && is_process_in_queue(ready_queue, before_processed))
+        return before_processed;
+    else
+        return min;
+}
+
+Process highest_response_ratio_next_preemptive(ProcessQueue ready_queue, Process before_processed) {
+    if (is_queue_empty(ready_queue))
+        return NULL;
+
+    ProcessQueueNode now = *ready_queue;
+    Process highest = now->process;
+
+    while (now != NULL) {
+        double highest_priority = ((double) highest->waiting_time + highest->cpu_burst_time) / highest->cpu_burst_time;
+        double now_priority =
+                ((double) now->process->waiting_time + now->process->cpu_burst_time) / now->process->cpu_burst_time;
+
+        if (highest_priority < now_priority)
+            highest = now->process;
+
+        now = now->next;
+    }
+
+    return highest;
+}
+
+Process highest_response_ratio_next_non_preemptive(ProcessQueue ready_queue, Process before_processed) {
+    if (is_queue_empty(ready_queue))
+        return NULL;
+
+    ProcessQueueNode now = *ready_queue;
+    Process highest = now->process;
+
+    while (now != NULL) {
+        double highest_priority = ((double) highest->waiting_time + highest->cpu_burst_time) / highest->cpu_burst_time;
+        double now_priority =
+                ((double) now->process->waiting_time + now->process->cpu_burst_time) / now->process->cpu_burst_time;
+
+        if (highest_priority < now_priority)
+            highest = now->process;
+
+        now = now->next;
+    }
+
+
+    if (before_processed != NULL && is_process_in_queue(ready_queue, before_processed))
+        return before_processed;
+    else
+        return highest;
 }

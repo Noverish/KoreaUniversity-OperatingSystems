@@ -23,6 +23,12 @@ Process priority_non_preemptive(ProcessQueue, Process);
 
 Process round_robin(ProcessQueue, Process);
 
-extern int terminated_process_num;
+Process shortest_remaining_time_first_preemptive(ProcessQueue, Process);
+
+Process shortest_remaining_time_first_non_preemptive(ProcessQueue, Process);
+
+Process highest_response_ratio_next_preemptive(ProcessQueue, Process);
+
+Process highest_response_ratio_next_non_preemptive(ProcessQueue, Process);
 
 #endif //CPU_SCHEDULING_SIMULATOR_SCHEDULERS_H
