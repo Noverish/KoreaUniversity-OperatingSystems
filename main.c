@@ -7,22 +7,22 @@
 #include "print.h"
 
 int scheduler_num = 10;
-Scheduler schedulers[] = {first_come_first_served,
+Scheduler schedulers[] = {round_robin,
+                          first_come_first_served,
                           shortest_job_first_preemptive,
                           shortest_job_first_non_preemptive,
                           priority_preemptive,
                           priority_non_preemptive,
-                          round_robin,
                           shortest_remaining_time_first_preemptive,
                           shortest_remaining_time_first_non_preemptive,
                           highest_response_ratio_next_preemptive,
                           highest_response_ratio_next_non_preemptive};
-char *scheduler_names[] = {"first_come_first_served",
+char *scheduler_names[] = {"round_robin",
+                           "first_come_first_served",
                            "shortest_job_first_preemptive",
                            "shortest_job_first_non_preemptive",
                            "priority_preemptive",
                            "priority_non_preemptive",
-                           "round_robin",
                            "shortest_remaining_time_first_preemptive",
                            "shortest_remaining_time_first_non_preemptive",
                            "highest_response_ratio_next_preemptive",
