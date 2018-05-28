@@ -3,6 +3,7 @@
 //
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "schedulers.h"
 #include "options.h"
 
@@ -81,9 +82,13 @@ Process round_robin(ProcessQueue ready_queue, Process before_processed) {
 
     do {
         if (now->process->continuous_cpu_burst_time == ROUND_ROBIN_TIME_QUANTUM) {
-            now->process->continuous_cpu_burst_time = 0;
+            printf("0 - %p\n", now->process);
             remove_from_queue(ready_queue, now->process);
+            printf("1 - %p\n", now->process);
             add_to_queue(ready_queue, now->process);
+            printf("2 - %p\n", now->process);
+            now->process->continuous_cpu_burst_time = 0;
+            printf("3 - %p\n", now->process);
             now = *ready_queue;
         } else {
             return now->process;
