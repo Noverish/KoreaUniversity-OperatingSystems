@@ -21,4 +21,6 @@ void __print_waiting_and_turnaround_time(Process *processes, int size);
 
 void clear_string(char* string, int size);
 
+void __print_schedule_pointers(Schedule schedule);
+
 #endif //CPU_SCHEDULING_SIMULATOR_PRINT_H

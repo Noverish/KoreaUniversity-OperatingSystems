@@ -127,3 +127,17 @@ void clear_string(char *string, int size) {
     for (i = 0; i < size; i++)
         string[i] = 0;
 }
+
+void __print_schedule_pointers(Schedule schedule) {
+    if (schedule == NULL) {
+        printf("NULL\n");
+        return;
+    }
+
+    Schedule now = schedule;
+    while(now != NULL) {
+        printf("%p->", now);
+        now = now->next_schedule;
+    }
+    printf("NULL\n");
+}
