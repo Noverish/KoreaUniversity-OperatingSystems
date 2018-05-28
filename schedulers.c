@@ -100,6 +100,8 @@ Process round_robin(ProcessQueue ready_queue, Process before_processed) {
             printf("6\n");
             __print_schedule_pointers(schedules);
         } else {
+            printf("7\n");
+            __print_schedule_pointers(schedules);
             return now->process;
         }
     } while (now != NULL);
