@@ -7,7 +7,9 @@
 
 #include "processes.h"
 #include "queues.h"
+#include "schedule.h"
 
+extern Schedule schedules;
 
 typedef Process (*Scheduler)(ProcessQueue, Process);
 

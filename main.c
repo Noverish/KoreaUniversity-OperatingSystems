@@ -31,6 +31,7 @@ char *scheduler_names[] = {"first_come_first_served",
 Process *processes;
 ProcessQueue ready_queue;
 ProcessQueue waiting_queue;
+Schedule schedules;
 
 int main() {
     srand((unsigned int) time(NULL));
@@ -46,7 +47,7 @@ int main() {
         reset_process_information(processes, PROCESS_NUM);
         Scheduler now_scheduler = schedulers[scheduler_index];
         Process previous_process = NULL;
-        Schedule schedules = NULL;
+        schedules = NULL;
         int terminated_process_num = 0;
         int now_time;
 
@@ -54,10 +55,9 @@ int main() {
 
             // Put arrived process to ready queue
             put_arrived_process_to_ready_queue(ready_queue, processes, PROCESS_NUM, now_time);
-            __print_schedule_pointers(schedules);
+
             // Choose process
             Process p = now_scheduler(ready_queue, previous_process);
-            __print_schedule_pointers(schedules);
 
             // If chosen process is different from previous process,
             // reset continuous_cpu_burst_time of previous process
