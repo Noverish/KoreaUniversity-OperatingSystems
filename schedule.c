@@ -3,6 +3,7 @@
 //
 
 #include "schedule.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 Schedule create_schedule(Process p, BOOL io_occurred) {
@@ -17,6 +18,7 @@ void add_schedule(Schedule schedule, Process p, BOOL io_occurred) {
     Schedule now = schedule;
     while (now->next_schedule != NULL) {
         now = now->next_schedule;
+        printf("%p\n", now);
     }
     now->next_schedule = create_schedule(p, io_occurred);
 }
