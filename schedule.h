@@ -9,9 +9,9 @@
 #include "utils.h"
 
 struct _Schedule {
-    Process process;
-    BOOL io_occurred;
     struct _Schedule *next_schedule;
+    BOOL io_occurred;
+    Process process;
 };
 typedef struct _Schedule *Schedule;
 
