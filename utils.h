@@ -5,6 +5,8 @@
 #ifndef CPU_SCHEDULING_SIMULATOR_UTILS_H
 #define CPU_SCHEDULING_SIMULATOR_UTILS_H
 
+#include <stdint.h>
+
 typedef enum _BOOL BOOL;
 enum _BOOL {
     TRUE = 1, FALSE = 0
