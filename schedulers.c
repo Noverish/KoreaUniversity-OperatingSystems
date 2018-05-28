@@ -81,9 +81,9 @@ Process round_robin(ProcessQueue ready_queue, Process before_processed) {
 
     do {
         if (now->process->continuous_cpu_burst_time == ROUND_ROBIN_TIME_QUANTUM) {
+            now->process->continuous_cpu_burst_time = 0;
             remove_from_queue(ready_queue, now->process);
             add_to_queue(ready_queue, now->process);
-            now->process->continuous_cpu_burst_time = 0;
             now = *ready_queue;
         } else {
             return now->process;
