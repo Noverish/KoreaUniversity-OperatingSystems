@@ -65,7 +65,7 @@ void remove_from_queue(ProcessQueue queue, Process process) {
 
         if (now->process == process) {
             *queue = now->next;
-            free(now);
+//            free(now);
         } else {
             break;
         }
@@ -76,7 +76,7 @@ void remove_from_queue(ProcessQueue queue, Process process) {
     while (next != NULL) {
         if (next->process == process) {
             now->next = next->next;
-            free(next);
+//            free(next);
             next = now->next;
         } else {
             now = next;
