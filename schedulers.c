@@ -83,25 +83,18 @@ Process round_robin(ProcessQueue ready_queue, Process before_processed) {
 
     do {
         printf("1\n");
-        __print_schedule_pointers(schedules);
         if (now->process->continuous_cpu_burst_time == ROUND_ROBIN_TIME_QUANTUM) {
             printf("2\n");
-            __print_schedule_pointers(schedules);
             remove_from_queue(ready_queue, now->process);
             printf("3\n");
-            __print_schedule_pointers(schedules);
             add_to_queue(ready_queue, now->process);
             printf("4\n");
-            __print_schedule_pointers(schedules);
             now->process->continuous_cpu_burst_time = 0;
             printf("5\n");
-            __print_schedule_pointers(schedules);
             now = *ready_queue;
             printf("6\n");
-            __print_schedule_pointers(schedules);
         } else {
             printf("7\n");
-            __print_schedule_pointers(schedules);
             return now->process;
         }
     } while (now != NULL);

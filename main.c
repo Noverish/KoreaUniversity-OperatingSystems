@@ -58,38 +58,56 @@ int main() {
 
             // Choose process
             Process p = now_scheduler(ready_queue, previous_process);
-
+            printf("8\n");
             // If chosen process is different from previous process,
             // reset continuous_cpu_burst_time of previous process
             if (p != previous_process && previous_process != NULL)
                 previous_process->continuous_cpu_burst_time = 0;
-
+            printf("9\n");
             // Run process (cpu and io)
             if (p != NULL) {
+                printf("10\n");
                 p->remaining_cpu_burst_time -= 1; // Decrease remaining_cpu_burst_time
+                printf("11\n");
                 p->continuous_cpu_burst_time++; // Increase continuous_cpu_burst_time
+                printf("12\n");
             }
+            printf("13\n");
             decrease_io_burst_time_in_waiting_queue(waiting_queue); // Decrease remaining_io_burst_time
+            printf("14\n");
             increase_waiting_time(ready_queue, p);  // Increase waiting time of processes in ready queue
+            printf("15\n");
 
             // Terminate process if cpu burst done
             if (p != NULL && p->remaining_cpu_burst_time == 0) {
+                printf("16\n");
                 remove_from_queue(ready_queue, p);
+                printf("17\n");
                 p->turnaround_time = (now_time + 1) - p->arrival_time;
+                printf("18\n");
                 terminated_process_num++;
+                printf("19\n");
             }
 
             // Put process to ready queue when I/O done
             put_io_done_process_to_ready_queue(ready_queue, waiting_queue);
+            printf("20\n");
 
             BOOL io_occurred = FALSE;
+            printf("21\n");
             if (p != NULL && p->remaining_cpu_burst_time != 0) {
+                printf("22\n");
                 // Check I/O occurred
                 io_occurred = random_double() < IO_OCCUR_PROBABILITY ? TRUE : FALSE;
+                printf("23\n");
 
                 // Put process if I/O occurred
-                if (io_occurred)
+                if (io_occurred) {
+                    printf("24\n");
                     put_process_to_waiting_queue_from_ready_queue(ready_queue, waiting_queue, p);
+                    printf("25\n");
+                }
+                printf("26\n");
             }
 
             // Write logs
