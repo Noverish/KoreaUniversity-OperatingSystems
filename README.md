@@ -1,6 +1,6 @@
 # CPU Scheduling Simulator
 
-## This is an assignment of Operating Systems (COSE341-01) of Korea University in 2018 spring semester
+### This is an assignment of Operating Systems (COSE341-01) of Korea University in 2018 spring semester
 
 Simulating CPU scheduling algorithms with virtual processes which are consist of randomly generated cpu burst time, io burst time, arrive time, and priority.
 
@@ -23,8 +23,8 @@ Every scheduling algorithms are in schedulers.c
 
 ## Screenshots
 
-<img src="./readme/000.png" width="300">
+<img src="./readme/000.png" width="400">
 <br>
-<img src="./readme/001.png" width="300">
+<img src="./readme/001.png" width="400">
 <br>
-<img src="./readme/002.png" width="300">
+<img src="./readme/002.png" width="480">
