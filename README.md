@@ -2,11 +2,13 @@
 
 ### This is an assignment of Operating Systems (COSE341-01) of Korea University in 2018 spring semester
 
-Simulating CPU scheduling algorithms with virtual processes which are consist of randomly generated cpu burst time, io burst time, arrive time, and priority.
-
 I developed this on Clion (Jetbrain IDE)
 
 Every scheduling algorithms are in schedulers.c
+
+## What this do
+
+Simulate CPU scheduling algorithms with virtual processes which are consist of randomly generated cpu burst time, io burst time, arrive time, and priority.
 
 ## Implemented algorithms
 
